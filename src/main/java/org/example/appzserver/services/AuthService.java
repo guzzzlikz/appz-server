@@ -34,6 +34,8 @@ public class AuthService {
                 .email(userDTO.getEmail())
                 .name(userDTO.getName())
                 .password(userDTO.getPassword())
+                .xp(0)
+                .lvl(1)
                 .build();
         if (userRepository.existsByEmail(user.getEmail())) {
             log.info("UserService register has been called but email already exists");
