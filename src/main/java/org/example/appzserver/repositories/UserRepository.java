@@ -1,7 +1,7 @@
 package org.example.appzserver.repositories;
 
 
-import org.example.appzserver.models.User;
+import org.example.appzserver.models.entities.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

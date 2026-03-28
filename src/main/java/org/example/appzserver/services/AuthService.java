@@ -2,7 +2,8 @@ package org.example.appzserver.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.appzserver.components.HashComponent;
-import org.example.appzserver.models.User;
+import org.example.appzserver.models.dtos.UserDTO;
+import org.example.appzserver.models.entities.User;
 import org.example.appzserver.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,19 +17,24 @@ public class AuthService {
     @Autowired
     private HashComponent hashComponent;
 
-    public ResponseEntity<?> register(User user) {
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+    public ResponseEntity<?> register(UserDTO userDTO) {
+        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
             log.info("UserService register has been called but email is empty");
             return ResponseEntity.status(400).body("Email is required");
         }
-        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
             log.info("UserService register has been called but password is empty");
             return ResponseEntity.status(400).body("Password is required");
         }
-        if (user.getName() == null || user.getName().isEmpty()) {
+        if (userDTO.getName() == null || userDTO.getName().isEmpty()) {
             log.info("UserService register has been called but name is empty");
             return ResponseEntity.status(400).body("Name is required");
         }
+        User user = User.builder()
+                .email(userDTO.getEmail())
+                .name(userDTO.getName())
+                .password(userDTO.getPassword())
+                .build();
         if (userRepository.existsByEmail(user.getEmail())) {
             log.info("UserService register has been called but email already exists");
             return ResponseEntity.status(400).body("Email already exists");
@@ -37,15 +43,19 @@ public class AuthService {
         userRepository.save(user);
         return ResponseEntity.status(200).body("User registered successfully");
     }
-    public ResponseEntity<?> login(User user) {
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+    public ResponseEntity<?> login(UserDTO userDTO) {
+        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
             log.info("UserService login has been called but email is empty");
             return ResponseEntity.status(400).body("Email is required");
         }
-        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
             log.info("UserService login has been called but password is empty");
             return ResponseEntity.status(400).body("Password is required");
         }
+        User user = User.builder()
+                .password(userDTO.getPassword())
+                .email(userDTO.getEmail())
+                .build();
         if (!userRepository.existsByEmail(user.getEmail())) {
             log.info("UserService login has been called but email does not exist");
             return ResponseEntity.status(400).body("Email does not exist");
