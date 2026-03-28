@@ -23,4 +23,12 @@ public class HashComponent {
         }
         return hexString.toString();
     }
+    public byte[] hashToByte(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            return digest.digest(input.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
